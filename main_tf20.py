@@ -78,8 +78,8 @@ if args.train_input_dir is not None:
     train_input_dir = args.train_input_dir
 if args.test_input_dir is not None:
     test_input_dir = args.test_input_dir
-if args.out_dir is not None:
-    output_dir = args.out_dir
+if args.output_dir is not None:
+    output_dir = args.output_dir
 if args.save_ckpt_num is not None:
     ckpt_num = args.save_ckpt_num
 if args.ckpt_keep_num is not None:
