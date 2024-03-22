@@ -98,10 +98,10 @@ train_data_path = os.path.join(add_dir_prefix+train_input_dir, input_fname_patte
 test_data_path = os.path.join(add_dir_prefix+test_input_dir, input_fname_pattern)
 train_data = glob(train_data_path)
 if len(train_data) == 0:
-  raise Exception("[!] No data found in '" + train_data_path + "'")
+    raise Exception("[!] No data found in '" + train_data_path + "'")
 test_data = glob(test_data_path)
 if len(test_data) == 0:
-  raise Exception("[!] No data found in '" + test_data_path + "'")
+    raise Exception("[!] No data found in '" + test_data_path + "'")
 
 np.random.shuffle(train_data)
 TRAIN_BUFFER_SIZE = len(train_data)
@@ -118,18 +118,18 @@ discriminator.summary()
 loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
 
 def generator_loss(disc_generated_output, gen_output, target):
-  gan_loss = loss_object(tf.ones_like(disc_generated_output), disc_generated_output)
-  l1_loss = tf.reduce_mean(tf.abs(target - gen_output))
-  total_gen_loss = gan_loss + (LAMBDA * l1_loss)
+    gan_loss = loss_object(tf.ones_like(disc_generated_output), disc_generated_output)
+    l1_loss = tf.reduce_mean(tf.abs(target - gen_output))
+    total_gen_loss = gan_loss + (LAMBDA * l1_loss)
 
-  return total_gen_loss, gan_loss, l1_loss
+    return total_gen_loss, gan_loss, l1_loss
 
 def discriminator_loss(disc_real_output, disc_generated_output):
-  real_loss = loss_object(tf.ones_like(disc_real_output), disc_real_output)
-  generated_loss = loss_object(tf.zeros_like(disc_generated_output), disc_generated_output)
-  total_disc_loss = real_loss + generated_loss
+    real_loss = loss_object(tf.ones_like(disc_real_output), disc_real_output)
+    generated_loss = loss_object(tf.zeros_like(disc_generated_output), disc_generated_output)
+    total_disc_loss = real_loss + generated_loss
 
-  return total_disc_loss
+    return total_disc_loss
 
 generator_optimizer = tf.keras.optimizers.Adam(gen_lr, beta_1=gen_beta1)
 discriminator_optimizer = tf.keras.optimizers.Adam(disc_lr, beta_1=disc_beta1)
@@ -142,47 +142,47 @@ checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
 manager = tf.train.CheckpointManager(checkpoint, checkpoint_prefix, max_to_keep=max_to_keep)
 
 def generate_images(model, test_input, tar, epoch):
-  prediction = model(test_input, training=True)
-  _timestamp = timestamp()
-  data_path = os.path.join(add_dir_prefix+output_dir)
-  save_images(prediction, (1,1),
+    prediction = model(test_input, training=True)
+    _timestamp = timestamp()
+    data_path = os.path.join(add_dir_prefix+output_dir)
+    save_images(prediction, (1,1),
         '{}/img/train_{:08d}_{}.png'.format(data_path, epoch, _timestamp))
-  output = "./img/train_{:08d}_{}.png".format(epoch, _timestamp)
-  save_images(test_input, (1,1),
+    output = "./img/train_{:08d}_{}.png".format(epoch, _timestamp)
+    save_images(test_input, (1,1),
         '{}/img/train_{:08d}_{}-input.png'.format(data_path, epoch, _timestamp))
-  input = "./img/train_{:08d}_{}-input.png".format(epoch, _timestamp)
+    input = "./img/train_{:08d}_{}-input.png".format(epoch, _timestamp)
 
-  return input, output
+    return input, output
 
 @tf.function
 def train_step(input_image, target, step):
-  with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
-    gen_output = generator(input_image, training=True)
-    disc_real_output = discriminator([input_image, target], training=True)
-    disc_generated_output = discriminator([input_image, gen_output], training=True)
-    gen_total_loss, gen_gan_loss, gen_l1_loss = generator_loss(disc_generated_output, gen_output, target)
-    disc_loss = discriminator_loss(disc_real_output, disc_generated_output)
+    with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
+        gen_output = generator(input_image, training=True)
+        disc_real_output = discriminator([input_image, target], training=True)
+        disc_generated_output = discriminator([input_image, gen_output], training=True)
+        gen_total_loss, gen_gan_loss, gen_l1_loss = generator_loss(disc_generated_output, gen_output, target)
+        disc_loss = discriminator_loss(disc_real_output, disc_generated_output)
 
-  generator_gradients = gen_tape.gradient(gen_total_loss,
+    generator_gradients = gen_tape.gradient(gen_total_loss,
                                           generator.trainable_variables)
-  discriminator_gradients = disc_tape.gradient(disc_loss,
+    discriminator_gradients = disc_tape.gradient(disc_loss,
                                                discriminator.trainable_variables)
-  generator_optimizer.apply_gradients(zip(generator_gradients,
+    generator_optimizer.apply_gradients(zip(generator_gradients,
                                           generator.trainable_variables))
-  discriminator_optimizer.apply_gradients(zip(discriminator_gradients,
+    discriminator_optimizer.apply_gradients(zip(discriminator_gradients,
                                               discriminator.trainable_variables))
-  return gen_total_loss, gen_gan_loss, gen_l1_loss, disc_loss
+    return gen_total_loss, gen_gan_loss, gen_l1_loss, disc_loss
 
 def fit(train_ds, test_ds):
-  for epoch in range(epochs):
-      start = time.time()
-      cnt = 0
+    for epoch in range(epochs):
+        start = time.time()
+        cnt = 0
 
-      if TRAIN_BUFFER_SIZE < BATCH_SIZE:
-          logging.error ("[!] Entire dataset size is less than the configured batch_size")
-          raise Exception("[!] Entire dataset size is less than the configured batch_size")
-      batch_idxs = TRAIN_BUFFER_SIZE // BATCH_SIZE
-      for idx in range (int(batch_idxs)):
+        if TRAIN_BUFFER_SIZE < BATCH_SIZE:
+            logging.error ("[!] Entire dataset size is less than the configured batch_size")
+            raise Exception("[!] Entire dataset size is less than the configured batch_size")
+        batch_idxs = TRAIN_BUFFER_SIZE // BATCH_SIZE
+        for idx in range (int(batch_idxs)):
             batch_start = time.time()
             sample_files = train_ds[idx*BATCH_SIZE:(idx+1)*BATCH_SIZE]
             #dataset = tf.data.Dataset.from_tensor_slices(sample_files).shuffle(BATCH_SIZE).batch(BATCH_SIZE)
@@ -201,32 +201,32 @@ def fit(train_ds, test_ds):
             print ('Batch Step(size:{}) :{}/{} in epoch {} is {} sec'.format(BATCH_SIZE, idx+1, batch_idxs, epoch+1, time.time()-batch_start))
             logging.info ('Batch Step(size:{}) :{}/{} in epoch {} is {} sec'.format(BATCH_SIZE, idx+1, batch_idxs, epoch+1, time.time()-batch_start))
 
-      logging.info('gen_total_loss:{}'.format(gen_total_loss))
-      logging.info('gen_gan_loss:{}'.format(gen_gan_loss))
-      logging.info('gen_l1_loss:{}'.format(gen_l1_loss))
-      logging.info('disc_loss:{}'.format(disc_loss))
-      print('gen_total_loss:', gen_total_loss)
-      print('gen_gan_loss:', gen_gan_loss)
-      print('gen_l1_loss:', gen_l1_loss)
-      print('disc_loss:', disc_loss)
+        logging.info('gen_total_loss:{}'.format(gen_total_loss))
+        logging.info('gen_gan_loss:{}'.format(gen_gan_loss))
+        logging.info('gen_l1_loss:{}'.format(gen_l1_loss))
+        logging.info('disc_loss:{}'.format(disc_loss))
+        print('gen_total_loss:', gen_total_loss)
+        print('gen_gan_loss:', gen_gan_loss)
+        print('gen_l1_loss:', gen_l1_loss)
+        print('disc_loss:', disc_loss)
 
-      if (epoch+1) % save_pic_num == 0:
-        np.random.shuffle(test_ds)
-        test_ds_tmp = tf.data.Dataset.list_files(test_ds[0])
-        test_ds_tmp = test_ds_tmp.map(load_image_test)
-        test_ds_tmp = test_ds_tmp.batch(1)
-        example_input, example_target = next(iter(test_ds_tmp.take(1)))
-        generate_images(generator, example_input, example_target, epoch)
-        logging.info("image saved!")
-        print("image saved!")
-      # Save (checkpoint) the model
-      if (epoch + 1) % ckpt_num == 0:
-        logging.info('save checkpoint:{}'.format(checkpoint_prefix))
-        print('save checkpoint:{}'.format(checkpoint_prefix))
-        manager.save()
+        if (epoch+1) % save_pic_num == 0:
+            np.random.shuffle(test_ds)
+            test_ds_tmp = tf.data.Dataset.list_files(test_ds[0])
+            test_ds_tmp = test_ds_tmp.map(load_image_test)
+            test_ds_tmp = test_ds_tmp.batch(1)
+            example_input, example_target = next(iter(test_ds_tmp.take(1)))
+            generate_images(generator, example_input, example_target, epoch)
+            logging.info("image saved!")
+            print("image saved!")
+        # Save (checkpoint) the model
+        if (epoch + 1) % ckpt_num == 0:
+            logging.info('save checkpoint:{}'.format(checkpoint_prefix))
+            print('save checkpoint:{}'.format(checkpoint_prefix))
+            manager.save()
 
-      print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
-      logging.info ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
+        print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
+        logging.info ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
 
 def load_c(checkpoint_dir):
     logging.info(" [*] Reading checkpoints...{}".format(checkpoint_dir))
@@ -234,17 +234,17 @@ def load_c(checkpoint_dir):
     checkpoint_prefix_load = os.path.join(add_dir_prefix+checkpoint_dir)
     ckpt = tf.train.get_checkpoint_state(checkpoint_prefix_load)
     if ckpt and ckpt.model_checkpoint_path:
-      ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-      checkpoint.restore(tf.train.latest_checkpoint(checkpoint_prefix_load))
-      #counter = int(next(re.finditer("(\d+)(?!.*\d)",ckpt_name)).group(0))
-      counter = int(ckpt_name.split('-')[-1])
-      logging.info("******** [*] Success to read {}".format(ckpt_name))
-      print("******** [*] Success to read {}".format(ckpt_name))
-      return True, counter
+        ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+        checkpoint.restore(tf.train.latest_checkpoint(checkpoint_prefix_load))
+        #counter = int(next(re.finditer("(\d+)(?!.*\d)",ckpt_name)).group(0))
+        counter = int(ckpt_name.split('-')[-1])
+        logging.info("******** [*] Success to read {}".format(ckpt_name))
+        print("******** [*] Success to read {}".format(ckpt_name))
+        return True, counter
     else:
-      logging.error(" [*] Failed to find a checkpoint")
-      print(" [*] Failed to find a checkpoint")
-      return False, 0
+        logging.error(" [*] Failed to find a checkpoint")
+        print(" [*] Failed to find a checkpoint")
+        return False, 0
 
 def append_index(input, output):
     index_path = os.path.join(add_dir_prefix+output_dir, "index.html")
