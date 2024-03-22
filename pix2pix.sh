@@ -5,7 +5,7 @@ PIDFILE="./pix2pix.pid"
 start(){
   echo "start deamon"
   #sh start.sh
-  python main_tf20.py --again >>out.log &
+  python main_tf20.py --runmode again >>out.log &
   sleep 10
   ps -ef|grep 'python\ main_tf20.py' | awk '{print $2}' > $PIDFILE
 }
@@ -25,7 +25,7 @@ stop(){
   RETVAL=$?
   if [ ${RETVAL} -eq 0 ]; then
     echo "deamon stopped"
-    rm ${PIDFILE} 
+    rm ${PIDFILE}
   fi
   echo "end stop process"
 }
