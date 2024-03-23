@@ -124,7 +124,7 @@ if os.path.isdir(checkpoint_prefix) == False:
     print("ERROR:DIRECTORY is not found : {}".format(add_dir_prefix+checkpoint_dir))
     ERR_FLG = True
 
-data_path = os.path.join(add_dir_prefix+output_dir)
+data_path = os.path.join(add_dir_prefix+output_dir+'/img')
 if os.path.isdir(data_path) == False:
     print("ERROR:DIRECTORY is not found : {}".format(add_dir_prefix+output_dir+'/img'))
     ERR_FLG = True
