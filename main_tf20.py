@@ -70,6 +70,7 @@ parser.add_argument('--epochs_num', type=int,help='number of times epoch')
 parser.add_argument('--batch_size', type=int, help='batch size to learn picture')
 
 args = parser.parse_args()
+
 if args.log_dir is not None:
     log_dir = args.log_dir
 if args.ckpt_dir is not None:
@@ -91,17 +92,47 @@ if args.epochs_num is not None:
 if args.batch_size is not None:
     BATCH_SIZE = args.batch_size
 
+ERR_FLG = False
 log_dir = add_dir_prefix+log_dir
+if os.path.isdir(log_dir) == False:
+    print("DIRECTORY is not found : {}".format(log_dir))
+    ERR_FLG = True
 log_prefix = os.path.join(log_dir, "system-{}.log".format(timestamp()))
-logging.basicConfig(filename=log_prefix, level=log_level)
+
+_train_data_path = os.path.join(add_dir_prefix+train_input_dir)
 train_data_path = os.path.join(add_dir_prefix+train_input_dir, input_fname_pattern)
-test_data_path = os.path.join(add_dir_prefix+test_input_dir, input_fname_pattern)
+if os.path.isdir(_train_data_path) == False:
+    print("DIRECTORY is not found : {}".format(_train_data_path))
+    ERR_FLG = True
 train_data = glob(train_data_path)
 if len(train_data) == 0:
-    raise Exception("[!] No data found in '" + train_data_path + "'")
+    print("[!] No data found in '" + train_data_path + "'")
+    ERR_FLG = True
+
+_test_data_path = os.path.join(add_dir_prefix+test_input_dir)
+test_data_path = os.path.join(add_dir_prefix+test_input_dir, input_fname_pattern)
+if os.path.isdir(_test_data_path) == False:
+    print("DIRECTORY is not found : {}".format(_test_data_path))
+    ERR_FLG = True
 test_data = glob(test_data_path)
 if len(test_data) == 0:
-    raise Exception("[!] No data found in '" + test_data_path + "'")
+    print("[!] No data found in '" + test_data_path + "'")
+    ERR_FLG = True
+
+checkpoint_prefix = os.path.join(add_dir_prefix+checkpoint_dir)
+if os.path.isdir(checkpoint_prefix) == False:
+    print("DIRECTORY is not found : {}".format(add_dir_prefix+checkpoint_dir))
+    ERR_FLG = True
+
+data_path = os.path.join(add_dir_prefix+output_dir)
+if os.path.isdir(data_path) == False:
+    print("DIRECTORY is not found : {}".format(add_dir_prefix+output_dir))
+    ERR_FLG = True
+
+if ERR_FLG == True:
+    print("please make directories. [program exit]")
+    sys.exit()
+logging.basicConfig(filename=log_prefix, level=log_level)
 
 np.random.shuffle(train_data)
 TRAIN_BUFFER_SIZE = len(train_data)
@@ -134,7 +165,6 @@ def discriminator_loss(disc_real_output, disc_generated_output):
 generator_optimizer = tf.keras.optimizers.Adam(gen_lr, beta_1=gen_beta1)
 discriminator_optimizer = tf.keras.optimizers.Adam(disc_lr, beta_1=disc_beta1)
 
-checkpoint_prefix = os.path.join(add_dir_prefix+checkpoint_dir)
 checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  discriminator_optimizer=discriminator_optimizer,
                                  generator=generator,
@@ -144,7 +174,6 @@ manager = tf.train.CheckpointManager(checkpoint, checkpoint_prefix, max_to_keep=
 def generate_images(model, test_input, tar, epoch):
     prediction = model(test_input, training=True)
     _timestamp = timestamp()
-    data_path = os.path.join(add_dir_prefix+output_dir)
     save_images(prediction, (1,1),
         '{}/img/train_{:08d}_{}.png'.format(data_path, epoch, _timestamp))
     output = "./img/train_{:08d}_{}.png".format(epoch, _timestamp)
