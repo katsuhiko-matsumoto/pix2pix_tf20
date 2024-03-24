@@ -228,17 +228,17 @@ def fit(train_ds, test_ds):
             for step, (input_image, target) in train_dataset.take(BATCH_SIZE).enumerate():
                 gen_total_loss, gen_gan_loss, gen_l1_loss, disc_loss = train_step(input_image, target, step)
 
-            print ('Batch Step(size:{}) :{}/{} in epoch {} is {} sec'.format(BATCH_SIZE, idx+1, batch_idxs, epoch+1, time.time()-batch_start))
+            #print ('Batch Step(size:{}) :{}/{} in epoch {} is {} sec'.format(BATCH_SIZE, idx+1, batch_idxs, epoch+1, time.time()-batch_start))
             logging.info ('Batch Step(size:{}) :{}/{} in epoch {} is {} sec'.format(BATCH_SIZE, idx+1, batch_idxs, epoch+1, time.time()-batch_start))
 
         logging.info('gen_total_loss:{}'.format(gen_total_loss))
         logging.info('gen_gan_loss:{}'.format(gen_gan_loss))
         logging.info('gen_l1_loss:{}'.format(gen_l1_loss))
         logging.info('disc_loss:{}'.format(disc_loss))
-        print('gen_total_loss:', gen_total_loss)
-        print('gen_gan_loss:', gen_gan_loss)
-        print('gen_l1_loss:', gen_l1_loss)
-        print('disc_loss:', disc_loss)
+        #print('gen_total_loss:', gen_total_loss)
+        #print('gen_gan_loss:', gen_gan_loss)
+        #print('gen_l1_loss:', gen_l1_loss)
+        #print('disc_loss:', disc_loss)
 
         if (epoch+1) % save_pic_num == 0:
             np.random.shuffle(test_ds)
@@ -248,14 +248,14 @@ def fit(train_ds, test_ds):
             example_input, example_target = next(iter(test_ds_tmp.take(1)))
             generate_images(generator, example_input, example_target, epoch)
             logging.info("image saved!")
-            print("image saved!")
+            #print("image saved!")
         # Save (checkpoint) the model
         if (epoch + 1) % ckpt_num == 0:
             logging.info('save checkpoint:{}'.format(checkpoint_prefix))
-            print('save checkpoint:{}'.format(checkpoint_prefix))
+            #print('save checkpoint:{}'.format(checkpoint_prefix))
             manager.save()
 
-        print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
+        #print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
         logging.info ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
 
 def load_c(checkpoint_dir):
