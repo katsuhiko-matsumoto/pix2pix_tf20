@@ -131,7 +131,8 @@ if os.path.isdir(data_path) == False:
 
 if ERR_FLG == True:
     print("please fix error. [program exit]")
-    sys.exit()
+    #sys.stdout.write(str(1))
+    sys.exit(1)
 logging.basicConfig(filename=log_prefix, level=log_level)
 
 np.random.shuffle(train_data)

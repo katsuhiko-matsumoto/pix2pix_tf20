@@ -5,7 +5,7 @@ PIDFILE="./pix2pix.pid"
 start(){
   echo "start deamon"
   #sh start.sh
-  python main_tf20.py --runmode again >>out.log &
+  python main_tf20.py --runmode again 2>out.log &
   sleep 10
   ps -ef|grep 'python\ main_tf20.py' | awk '{print $2}' > $PIDFILE
 }
