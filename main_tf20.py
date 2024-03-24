@@ -176,11 +176,11 @@ def generate_images(model, test_input, tar, epoch):
     prediction = model(test_input, training=True)
     _timestamp = timestamp()
     save_images(prediction, (1,1),
-        '{}/img/train_{:08d}_{}.png'.format(data_path, epoch, _timestamp))
-    output = "./img/train_{:08d}_{}.png".format(epoch, _timestamp)
+        '{}/train_{:08d}_{}.png'.format(data_path, epoch, _timestamp))
+    output = "./train_{:08d}_{}.png".format(epoch, _timestamp)
     save_images(test_input, (1,1),
-        '{}/img/train_{:08d}_{}-input.png'.format(data_path, epoch, _timestamp))
-    input = "./img/train_{:08d}_{}-input.png".format(epoch, _timestamp)
+        '{}/train_{:08d}_{}-input.png'.format(data_path, epoch, _timestamp))
+    input = "./train_{:08d}_{}-input.png".format(epoch, _timestamp)
 
     return input, output
 
