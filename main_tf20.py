@@ -95,14 +95,14 @@ if args.batch_size is not None:
 ERR_FLG = False
 log_dir = add_dir_prefix+log_dir
 if os.path.isdir(log_dir) == False:
-    print("ERROR:DIRECTORY is not found : {}".format(log_dir))
-    ERR_FLG = True
+    os.makedirs(os.path.join(log_dir))
 log_prefix = os.path.join(log_dir, "system-{}.log".format(timestamp()))
+logging.basicConfig(filename=log_prefix, level=log_level)
 
 _train_data_path = os.path.join(add_dir_prefix+train_input_dir)
 train_data_path = os.path.join(add_dir_prefix+train_input_dir, input_fname_pattern)
 if os.path.isdir(_train_data_path) == False:
-    print("ERROR:DIRECTORY is not found : {}".format(_train_data_path))
+    print("ERROR:TRAIN DIRECTORY is not found : {}".format(_train_data_path))
     ERR_FLG = True
 train_data = glob(train_data_path)
 if len(train_data) == 0:
@@ -112,7 +112,7 @@ if len(train_data) == 0:
 _test_data_path = os.path.join(add_dir_prefix+test_input_dir)
 test_data_path = os.path.join(add_dir_prefix+test_input_dir, input_fname_pattern)
 if os.path.isdir(_test_data_path) == False:
-    print("ERROR:DIRECTORY is not found : {}".format(_test_data_path))
+    print("ERROR:TEST DIRECTORY is not found : {}".format(_test_data_path))
     ERR_FLG = True
 test_data = glob(test_data_path)
 if len(test_data) == 0:
@@ -121,19 +121,16 @@ if len(test_data) == 0:
 
 checkpoint_prefix = os.path.join(add_dir_prefix+checkpoint_dir)
 if os.path.isdir(checkpoint_prefix) == False:
-    print("ERROR:DIRECTORY is not found : {}".format(add_dir_prefix+checkpoint_dir))
-    ERR_FLG = True
+    os.makedirs(checkpoint_prefix)
 
 data_path = os.path.join(add_dir_prefix+output_dir+'/img')
 if os.path.isdir(data_path) == False:
-    print("ERROR:DIRECTORY is not found : {}".format(add_dir_prefix+output_dir+'/img'))
-    ERR_FLG = True
+    os.makedirs(data_path)
 
 if ERR_FLG == True:
     print("please fix error. [program exit]")
     #sys.stdout.write(str(1))
     sys.exit(1)
-logging.basicConfig(filename=log_prefix, level=log_level)
 
 np.random.shuffle(train_data)
 TRAIN_BUFFER_SIZE = len(train_data)
