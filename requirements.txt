@@ -2,6 +2,6 @@ tensorflow==2.9.3
 imageio==2.4.1
 pillow==9.5.0
 scipy==1.7.3
-scikit0image==0.19.3
+scikit-image==0.19.3
 opencv-python
 
