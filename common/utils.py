@@ -5,10 +5,7 @@ import time
 import datetime
 import sys
 import time
-import cv2
-import scipy.misc
-from skimage.transform import resize
-from PIL import Image
+#import cv2
 import imageio
 import numpy as np
 
@@ -88,65 +85,10 @@ def load_image_test(image_file):
 
   return input_image, real_image
 
-#----------------------------
-#The MIT License (MIT)
-#
-#Copyright (c) 2016 Taehoon Kim
-#
-#Permission is hereby granted, free of charge, to any person obtaining a copy
-#of this software and associated documentation files (the "Software"), to deal
-#in the Software without restriction, including without limitation the rights
-#to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#copies of the Software, and to permit persons to whom the Software is
-#furnished to do so, subject to the following conditions
-#
-#The above copyright notice and this permission notice shall be included in all
-#copies or substantial portions of the Software.
-#
-#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-#IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-#FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-#AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-#LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-#OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-#SOFTWARE.
-
 def save_images(images, size, image_path):
-  return imsave(inverse_transform(images), size, image_path)
-
-def imsave(images, size, path):
-  image = np.squeeze(merge(images, size))
-  return imageio.imwrite(path, image)
-
-def image_manifold_size(num_images):
-  manifold_h = int(np.floor(np.sqrt(num_images)))
-  manifold_w = int(np.ceil(np.sqrt(num_images)))
-  assert manifold_h * manifold_w == num_images
-  return manifold_h, manifold_w
-
-def inverse_transform(images):
-  return (images+1.)/2.
-
-def merge(images, size):
-  h, w = images.shape[1], images.shape[2]
-  if (images.shape[3] in (3,4)):
-    c = images.shape[3]
-    img = np.zeros((h * size[0], w * size[1], c))
-    for idx, image in enumerate(images):
-      i = idx % size[1]
-      j = idx // size[1]
-      img[j * h:j * h + h, i * w:i * w + w, :] = image
-    return img
-  elif images.shape[3]==1:
-    img = np.zeros((h * size[0], w * size[1]))
-    for idx, image in enumerate(images):
-      i = idx % size[1]
-      j = idx // size[1]
-      img[j * h:j * h + h, i * w:i * w + w] = image[:,:,0]
-    return img
-  else:
-    raise ValueError('in merge(images,size) images parameter '
-                     'must have dimensions: HxW or HxWx3 or HxWx4')
+  #return imsave(inverse_transform(images), size, image_path)
+  return imageio.imwrite(image_path, np.array(images[0]))
+  #return cv2.imwrite(image_path, np.array(images[0]))
 
 def timestamp(s='%Y%m%d.%H%M%S', ts=None):
   if not ts: ts = time.time()
