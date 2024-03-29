@@ -4,8 +4,6 @@ import os
 import pathlib
 import time
 import datetime
-
-from matplotlib import pyplot as plt
 import sys
 
 class MODEL256(object):
