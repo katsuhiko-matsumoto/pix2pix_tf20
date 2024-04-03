@@ -11,8 +11,8 @@ import numpy as np
 import argparse
 
 #origin libs
-#from models.model256 import MODEL256 as MODEL
-from models.model512 import MODEL512 as MODEL
+from models.model256 import MODEL256 as MODEL
+#from models.model512 import MODEL512 as MODEL
 from common.utils import *
 
 #------------PARM SETTING--------------
@@ -22,11 +22,11 @@ log_level = logging.INFO
 #log directory
 log_dir = 'logs'
 #checkpoint directory
-checkpoint_dir = './training_checkpoints_512'
+checkpoint_dir = './training_checkpoints'
 #input directory of learning picture for training
-train_input_dir = 'tocolor'
+train_input_dir = 'train_input_tocolor'
 #input directory of learning picture for testing
-test_input_dir = 'tocolor'
+test_input_dir = 'test_input_tocolor'
 #input file name pattern
 input_fname_pattern = '*.png'
 #output directory of generated picture
