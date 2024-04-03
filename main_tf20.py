@@ -11,8 +11,8 @@ import numpy as np
 import argparse
 
 #origin libs
-from models.model256 import MODEL256 as MODEL
-#from models.model512 import MODEL512 as MODEL
+#from models.model256 import MODEL256 as MODEL
+from models.model512 import MODEL512 as MODEL
 from common.utils import *
 
 #------------PARM SETTING--------------
@@ -22,11 +22,11 @@ log_level = logging.INFO
 #log directory
 log_dir = 'logs'
 #checkpoint directory
-checkpoint_dir = './training_checkpoints'
+checkpoint_dir = './training_checkpoints_512'
 #input directory of learning picture for training
-train_input_dir = 'train_input_tocolor'
+train_input_dir = 'tocolor'
 #input directory of learning picture for testing
-test_input_dir = 'train_input_tocolor'
+test_input_dir = 'tocolor'
 #input file name pattern
 input_fname_pattern = '*.png'
 #output directory of generated picture
@@ -299,7 +299,7 @@ def main(args):
                     fit(train_data, test_data)
                 except BaseException as e:
                     print(e)
-                    logging.error(e)
+                    logging.error(e, stack_info=True)
             else:
                 logging.error("stop. reason:failed to load")
                 print("stop. reason:failed to load")
@@ -310,7 +310,7 @@ def main(args):
                 fit(train_data, test_data)
             except BaseException as e:
                 print(e)
-                logging.error(e)
+                logging.error(e, stack_info=True)
         elif args.runmode == 'generate':
             flag, counter = load_c(checkpoint_dir)
             if flag:
@@ -330,7 +330,7 @@ def main(args):
                         append_index(input, output)
                 except BaseException as e:
                     print(e)
-                    logging.error(e)
+                    logging.error(e, stack_info=True)
 
 if __name__ == '__main__':
     #args = sys.argv
